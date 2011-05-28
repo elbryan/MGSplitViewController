@@ -162,12 +162,14 @@
 #pragma mark -
 #pragma mark View management
 
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
+    if (self.detailViewController)
+    {
+        return [self.detailViewController shouldAutorotateToInterfaceOrientation:interfaceOrientation];
+    }
     return YES;
 }
-
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
@@ -235,7 +237,6 @@
 	if ((self.navigationController)&&(!self.navigationController.navigationBarHidden)) {
 		navigationBarHeight = self.navigationController.navigationBar.frame.size.height;
 	}
-    
     CGFloat tabBarHeight = 0;
     if (self.tabBarController) {
         tabBarHeight = self.tabBarController.tabBar.frame.size.height;
@@ -592,8 +593,8 @@
 		
 	} else if (!inPopover && _hiddenPopoverController && _barButtonItem) {
 		// I know this looks strange, but it fixes a bizarre issue with UIPopoverController leaving masterViewController's views in disarray.
-if (self.view.window != nil) {
-		[_hiddenPopoverController presentPopoverFromRect:CGRectZero inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:NO];
+        if (self.view.window != nil) {
+            [_hiddenPopoverController presentPopoverFromRect:CGRectZero inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:NO];
 		}
 		// Remove master from popover and destroy popover, if it exists.
 		[_hiddenPopoverController dismissPopoverAnimated:NO];

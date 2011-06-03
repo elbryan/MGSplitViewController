@@ -164,11 +164,12 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
+    BOOL should = UIInterfaceOrientationIsLandscape(interfaceOrientation);
     if (self.detailViewController)
     {
-        return [self.detailViewController shouldAutorotateToInterfaceOrientation:interfaceOrientation];
+        should = [self.detailViewController shouldAutorotateToInterfaceOrientation:interfaceOrientation];
     }
-    return YES;
+    return should;
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration

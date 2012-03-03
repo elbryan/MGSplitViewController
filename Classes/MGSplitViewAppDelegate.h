@@ -8,21 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@class RootViewController;
-@class DetailViewController;
-@class MGSplitViewController;
+@interface MGSplitViewAppDelegate :UIResponder <UIApplicationDelegate>
 
-@interface MGSplitViewAppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *window;
-    MGSplitViewController *splitViewController;
-    RootViewController *rootViewController;
-    DetailViewController *detailViewController;
-}
-
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-
-@property (nonatomic, retain) IBOutlet MGSplitViewController *splitViewController;
-@property (nonatomic, retain) IBOutlet RootViewController *rootViewController;
-@property (nonatomic, retain) IBOutlet DetailViewController *detailViewController;
+@property (strong, nonatomic) UIWindow *window;
 
 @end

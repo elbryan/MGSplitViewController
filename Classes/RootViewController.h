@@ -10,11 +10,7 @@
 
 @class DetailViewController;
 
-@interface RootViewController : UITableViewController {
-    DetailViewController *detailViewController;
-}
-
-@property (nonatomic, retain) IBOutlet DetailViewController *detailViewController;
+@interface RootViewController : UITableViewController 
 
 - (void)selectFirstRow;
 

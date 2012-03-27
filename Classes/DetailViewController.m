@@ -8,20 +8,30 @@
 
 #import "DetailViewController.h"
 #import "RootViewController.h"
+#import "MGSplitViewController.h"
 
+@interface DetailViewController () <UIPopoverControllerDelegate> 
 
-@interface DetailViewController ()
+@property (nonatomic, weak)IBOutlet UIBarButtonItem *toggleItem;
+@property (nonatomic, weak)IBOutlet UIBarButtonItem *verticalItem;
+@property (nonatomic, weak)IBOutlet UIBarButtonItem *dividerStyleItem;
+@property (nonatomic, weak)IBOutlet UIBarButtonItem *masterBeforeDetailItem;
+@property (nonatomic, weak) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, weak) IBOutlet UILabel *detailDescriptionLabel;
 
-@property (nonatomic, retain) UIPopoverController *popoverController;
+@property (nonatomic, retain)UIPopoverController *popoverController;
+
+- (IBAction)toggleMasterView:(id)sender;
+- (IBAction)toggleVertical:(id)sender;
+- (IBAction)toggleDividerStyle:(id)sender;
+- (IBAction)toggleMasterBeforeDetail:(id)sender;
+
 - (void)configureView;
 
 @end
 
 
 @implementation DetailViewController
-
-
-@synthesize toolbar, popoverController, detailItem, detailDescriptionLabel;
 
 
 #pragma mark -
@@ -31,16 +41,15 @@
 // When setting the detail item, update the view and dismiss the popover controller if it's showing.
 - (void)setDetailItem:(id)newDetailItem
 {
-    if (detailItem != newDetailItem) {
-        [detailItem release];
-        detailItem = [newDetailItem retain];
+    if (_detailItem != newDetailItem) {
+        _detailItem = newDetailItem;
         
         // Update the view.
         [self configureView];
     }
 	
-    if (popoverController != nil) {
-        [popoverController dismissPopoverAnimated:YES];
+    if (self.popoverController != nil) {
+        [self.popoverController dismissPopoverAnimated:YES];
     }        
 }
 
@@ -48,11 +57,11 @@
 - (void)configureView
 {
     // Update the user interface for the detail item.
-    detailDescriptionLabel.text = [detailItem description];
-	toggleItem.title = ([splitController isShowingMaster]) ? @"Hide Master" : @"Show Master"; // "I... AM... THE MASTER!" Derek Jacobi. Gave me chills.
-	verticalItem.title = (splitController.vertical) ? @"Horizontal Split" : @"Vertical Split";
-	dividerStyleItem.title = (splitController.dividerStyle == MGSplitViewDividerStyleThin) ? @"Enable Dragging" : @"Disable Dragging";
-	masterBeforeDetailItem.title = (splitController.masterBeforeDetail) ? @"Detail First" : @"Master First";
+    self.detailDescriptionLabel.text = [self.detailItem description];
+	self.toggleItem.title = ([self.splitController isShowingMaster]) ? @"Hide Master" : @"Show Master"; // "I... AM... THE MASTER!" Derek Jacobi. Gave me chills.
+	self.verticalItem.title = (self.splitController.vertical) ? @"Horizontal Split" : @"Vertical Split";
+	self.dividerStyleItem.title = (self.splitController.dividerStyle == MGSplitViewDividerStyleThin) ? @"Enable Dragging" : @"Disable Dragging";
+	self.masterBeforeDetailItem.title = (self.splitController.masterBeforeDetail) ? @"Detail First" : @"Master First";
 }
 
 
@@ -69,10 +78,9 @@
 	
 	if (barButtonItem) {
 		barButtonItem.title = @"Popover";
-		NSMutableArray *items = [[toolbar items] mutableCopy];
+		NSMutableArray *items = [[self.toolbar items] mutableCopy];
 		[items insertObject:barButtonItem atIndex:0];
-		[toolbar setItems:items animated:YES];
-		[items release];
+		[self.toolbar setItems:items animated:YES];
 	}
     self.popoverController = pc;
 }
@@ -86,10 +94,9 @@
 	//NSLog(@"%@", NSStringFromSelector(_cmd));
 	
 	if (barButtonItem) {
-		NSMutableArray *items = [[toolbar items] mutableCopy];
+		NSMutableArray *items = [[self.toolbar items] mutableCopy];
 		[items removeObject:barButtonItem];
-		[toolbar setItems:items animated:YES];
-		[items release];
+		[self.toolbar setItems:items animated:YES];
 	}
     self.popoverController = nil;
 }
@@ -128,29 +135,29 @@
 
 - (IBAction)toggleMasterView:(id)sender
 {
-	[splitController toggleMasterView:sender];
+	[self.splitController toggleMasterView:sender];
 	[self configureView];
 }
 
 
 - (IBAction)toggleVertical:(id)sender
 {
-	[splitController toggleSplitOrientation:self];
+	[self.splitController toggleSplitOrientation:self];
 	[self configureView];
 }
 
 
 - (IBAction)toggleDividerStyle:(id)sender
 {
-	MGSplitViewDividerStyle newStyle = ((splitController.dividerStyle == MGSplitViewDividerStyleThin) ? MGSplitViewDividerStylePaneSplitter : MGSplitViewDividerStyleThin);
-	[splitController setDividerStyle:newStyle animated:YES];
+	MGSplitViewDividerStyle newStyle = ((self.splitController.dividerStyle == MGSplitViewDividerStyleThin) ? MGSplitViewDividerStylePaneSplitter : MGSplitViewDividerStyleThin);
+	[self.splitController setDividerStyle:newStyle animated:YES];
 	[self configureView];
 }
 
 
 - (IBAction)toggleMasterBeforeDetail:(id)sender
 {
-	[splitController toggleMasterBeforeDetail:sender];
+	[self.splitController toggleMasterBeforeDetail:sender];
 	[self configureView];
 }
 
@@ -171,16 +178,16 @@
 	[self configureView];
 }
 
-
-- (void)dealloc
-{
-    [popoverController release];
-    [toolbar release];
-    
-    [detailItem release];
-    [detailDescriptionLabel release];
-    [super dealloc];
-}
+#pragma mark - properties
+@synthesize splitController = _splitController;
+@synthesize toggleItem = _toggleItem;
+@synthesize verticalItem = _verticalItem;
+@synthesize dividerStyleItem = _dividerStyleItem;
+@synthesize masterBeforeDetailItem = _masterBeforeDetailItem;
+@synthesize toolbar = _toolbar;
+@synthesize detailDescriptionLabel = _detailDescriptionLabel;
+@synthesize detailItem = _detailItem;
+@synthesize popoverController = _privatePopoverController;
 
 
 @end

@@ -7,13 +7,23 @@
 //
 
 #import "MGSplitCornersView.h"
+#import "MGSplitCornersView+protectedMethods.h"
+
+@interface MGSplitCornersView ()
+{
+	float cornerRadius;
+	MGSplitViewController *__weak splitViewController;
+	MGCornersPosition cornersPosition;
+	UIColor *cornerBackgroundColor;
+}
+
+@end
 
 @implementation MGSplitCornersView
 
 
 #pragma mark -
 #pragma mark Setup and teardown
-
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -28,15 +38,6 @@
 	
     return self;
 }
-
-
-- (void)dealloc
-{
-	self.cornerBackgroundColor = nil;
-	
-	[super dealloc];
-}
-
 
 #pragma mark -
 #pragma mark Geometry helpers
@@ -224,17 +225,16 @@ double rad2Deg(double radians)
 - (void)setCornerBackgroundColor:(UIColor *)color
 {
 	if (color != cornerBackgroundColor) {
-		[cornerBackgroundColor release];
-		cornerBackgroundColor = [color retain];
+		cornerBackgroundColor = color;
 		[self setNeedsDisplay];
 	}
 }
 
 
-@synthesize cornerRadius;
-@synthesize splitViewController;
-@synthesize cornersPosition;
-@synthesize cornerBackgroundColor;
+@synthesize cornerRadius = _cornerRadius;
+@synthesize splitViewController = _splitViewController;
+@synthesize cornersPosition = _cornersPosition;
+@synthesize cornerBackgroundColor = _cornerBackgroundColor;
 
 
 @end

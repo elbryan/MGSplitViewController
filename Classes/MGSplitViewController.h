@@ -16,24 +16,10 @@ typedef enum _MGSplitViewDividerStyle {
 
 @class MGSplitDividerView;
 @protocol MGSplitViewControllerDelegate;
-@interface MGSplitViewController : UIViewController <UIPopoverControllerDelegate> {
-	BOOL _showsMasterInPortrait;
-	BOOL _showsMasterInLandscape;
-	float _splitWidth;
-	id _delegate;
-	BOOL _vertical;
-	BOOL _masterBeforeDetail;
-	NSMutableArray *_viewControllers;
-	UIBarButtonItem *_barButtonItem; // To be compliant with wacky UISplitViewController behaviour.
-    UIPopoverController *_hiddenPopoverController; // Popover used to hold the master view if it's not always visible.
-	MGSplitDividerView *_dividerView; // View that draws the divider between the master and detail views.
-	NSArray *_cornerViews; // Views to draw the inner rounded corners between master and detail views.
-	float _splitPosition;
-	BOOL _reconfigurePopup;
-	MGSplitViewDividerStyle _dividerStyle; // Meta-setting which configures several aspects of appearance and behaviour.
-}
 
-@property (nonatomic, assign) IBOutlet id <MGSplitViewControllerDelegate> delegate;
+@interface MGSplitViewController : UIViewController 
+
+@property (nonatomic, weak) IBOutlet id <MGSplitViewControllerDelegate> delegate;
 @property (nonatomic, assign) BOOL showsMasterInPortrait; // applies to both portrait orientations (default NO)
 @property (nonatomic, assign) BOOL showsMasterInLandscape; // applies to both landscape orientations (default YES)
 @property (nonatomic, assign, getter=isVertical) BOOL vertical; // if NO, split is horizontal, i.e. master above detail (default YES)
@@ -43,12 +29,13 @@ typedef enum _MGSplitViewDividerStyle {
 @property (nonatomic, assign) BOOL allowsDraggingDivider; // whether to let the user drag the divider to alter the split position (default NO).
 
 @property (nonatomic, copy) NSArray *viewControllers; // array of UIViewControllers; master is at index 0, detail is at index 1.
-@property (nonatomic, retain) IBOutlet UIViewController *masterViewController; // convenience.
-@property (nonatomic, retain) IBOutlet UIViewController *detailViewController; // convenience.
-@property (nonatomic, retain) MGSplitDividerView *dividerView; // the view which draws the divider/split between master and detail.
+@property (nonatomic, weak) IBOutlet UIViewController *masterViewController; // convenience.
+@property (nonatomic, weak) IBOutlet UIViewController *detailViewController; // convenience.
+@property (nonatomic, weak) MGSplitDividerView *dividerView; // the view which draws the divider/split between master and detail.
 @property (nonatomic, assign) MGSplitViewDividerStyle dividerStyle; // style (and behaviour) of the divider between master and detail.
 
 @property (nonatomic, readonly, getter=isLandscape) BOOL landscape; // returns YES if this view controller is in either of the two Landscape orientations, else NO.
+@property (nonatomic, readonly, strong)NSArray *cornerViews;
 
 // Actions
 - (IBAction)toggleSplitOrientation:(id)sender; // toggles split axis between vertical (left/right; default) and horizontal (top/bottom).
@@ -70,7 +57,6 @@ typedef enum _MGSplitViewDividerStyle {
 			This implementation was chosen so you don't need to recalculate equivalent splitPositions if the user toggles masterBeforeDetail themselves.
  */
 - (void)setDividerStyle:(MGSplitViewDividerStyle)newStyle animated:(BOOL)animate; // Allows for animation of dividerStyle changes. The property's regular setter is not animated.
-- (NSArray *)cornerViews;
 /*
  -cornerViews returns an NSArray of two MGSplitCornersView objects, used to draw the inner corners.
  The first view is the "leading" corners (top edge of screen for left/right split, left edge of screen for top/bottom split).

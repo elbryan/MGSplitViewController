@@ -925,7 +925,7 @@
 	if (_viewControllers && [_viewControllers count] > 0) {
 		id controller = [_viewControllers objectAtIndex:0];
 		if ([controller isKindOfClass:[UIViewController class]]) {
-			return (id) [[controller retain] autorelease];
+			return (UIViewController *) controller;
 		}
 	}
 	return nil;
@@ -964,7 +964,7 @@
 	if (_viewControllers && [_viewControllers count] > 1) {
 		id controller = [_viewControllers objectAtIndex:1];
 		if ([controller isKindOfClass:[UIViewController class]]) {
-			return (id) [[controller retain] autorelease];
+            return (UIViewController *) controller;
 		}
 	}
 	return nil;

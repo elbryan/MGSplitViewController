@@ -59,6 +59,8 @@
 
 @implementation MGSplitViewController
 
+@synthesize shouldLayoutSubviews = _shouldLayoutSubviews;
+
 
 #pragma mark -
 #pragma mark Orientation helpers
@@ -160,6 +162,7 @@
 	self.dividerView.splitViewController = self;
 	self.dividerView.backgroundColor = MG_DEFAULT_CORNER_COLOR;
 	self.dividerStyle = MGSplitViewDividerStyleThin;
+    self.shouldLayoutSubviews = YES;
 }
 
 
@@ -207,7 +210,10 @@
 	
 	// Re-tile views.
 	_reconfigurePopup = YES;
-	[self layoutSubviewsForInterfaceOrientation:toInterfaceOrientation withAnimation:YES];
+    
+    // Layout subviews only if required
+    if (_shouldLayoutSubviews)
+        [self layoutSubviewsForInterfaceOrientation:toInterfaceOrientation withAnimation:YES];
     
     // Notify master & detail view controllers
     [self.masterViewController willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
@@ -570,7 +576,7 @@
 - (void)reconfigureForMasterInPopover:(BOOL)inPopover
 {
 	_reconfigurePopup = NO;
-	
+    
 	if ((inPopover && _privateHiddenPopoverController) || (!inPopover && !_privateHiddenPopoverController) || !self.masterViewController) {
 		// Nothing to do.
 		return;
@@ -603,12 +609,13 @@
 		
 	} else if (!inPopover && _privateHiddenPopoverController && _barButtonItem) {
 		// I know this looks strange, but it fixes a bizarre issue with UIPopoverController leaving masterViewController's views in disarray.
-        if (self.view.window != nil) {
-            [_privateHiddenPopoverController presentPopoverFromRect:CGRectZero inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:NO];
+      	if (self.view.window) {
+            [_privateHiddenPopoverController presentPopoverFromRect:CGRectMake(0, 0, 1, 1) inView:self.view.window permittedArrowDirections:UIPopoverArrowDirectionAny animated:NO];
 		}
+        
 		// Remove master from popover and destroy popover, if it exists.
-		[_privateHiddenPopoverController dismissPopoverAnimated:NO];
-		_privateHiddenPopoverController = nil;
+        [_privateHiddenPopoverController dismissPopoverAnimated:NO];
+        _privateHiddenPopoverController = nil;
 		
 		// Inform delegate that the _barButtonItem will become invalid.
 		if (delegate && [delegate respondsToSelector:@selector(splitViewController:willShowViewController:invalidatingBarButtonItem:)]) {
@@ -625,7 +632,7 @@
 		if (masterView && masterView.superview != self.view) {
 			[masterView removeFromSuperview];
 		}
-	}
+    }
 }
 
 

@@ -36,6 +36,7 @@ typedef enum _MGSplitViewDividerStyle {
 
 @property (nonatomic, readonly, getter=isLandscape) BOOL landscape; // returns YES if this view controller is in either of the two Landscape orientations, else NO.
 @property (nonatomic, readonly, strong)NSArray *cornerViews;
+@property (nonatomic, assign) BOOL shouldLayoutSubviews; // if NO, subviews are not layed out when changing orientation (default YES);
 
 // Actions
 - (IBAction)toggleSplitOrientation:(id)sender; // toggles split axis between vertical (left/right; default) and horizontal (top/bottom).
